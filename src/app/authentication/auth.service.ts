@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment';
 import { AuthData } from './auth-data.model';
 
 const BACKEND_URL = environment.apiUrl + '/api/v1/user';

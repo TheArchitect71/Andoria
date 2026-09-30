@@ -1,27 +1,15 @@
-import { TestBed, async } from '@angular/core/testing';
+import { AppModule } from 'src/app/app.module';
+import { AuthModule } from 'src/app/authentication/auth.module';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 describe('AppComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ],
-    }).compileComponents();
-  }));
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
-  it(`should have as title 'Portfolio'`, async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('Portfolio');
-  }));
-  it('should render title in a h1 tag', async(() => {
+  beforeEach(() => { TestBed.configureTestingModule({ imports: [AppModule, AuthModule], providers: [provideHttpClientTesting()],}); });
+  it('renders the navigation shell', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to Portfolio!');
-  }));
+    expect(fixture.nativeElement.querySelector('mat-sidenav-container')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('router-outlet')).toBeTruthy();
+    fixture.destroy();
+  });
 });

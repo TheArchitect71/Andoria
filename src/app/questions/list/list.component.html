@@ -1,28 +1,32 @@
-<section>
-  <mat-spinner *ngIf="isLoading"></mat-spinner>
-
-  <mat-card
-    *ngFor="let question of questions;"
+<section aria-label="Journey questions">
+  <a
+    class="question-link"
+    *ngFor="let question of state.questions; trackBy: trackQuestion"
     [routerLink]="['/answer', question.id]"
-    routerLinkActive="router-link-active"
+    [queryParams]="{ journey: journeyPath }"
   >
-    <mat-card-content>
-      {{ question.title }}
-    </mat-card-content>
-  </mat-card>
-  <div class="paginator">
-    <button
-      mat-stroked-button
-      (click)="onChangedPage()"
-      *ngIf="questions.length > 0 && !isLoading"
-    >
-      More Questions
-    </button>
+    <mat-card>
+      <mat-card-content>{{ question.title }}</mat-card-content>
+    </mat-card>
+  </a>
+
+  <div #loadTrigger class="load-trigger" aria-hidden="true"></div>
+
+  <div class="load-status" *ngIf="state.isLoading" role="status">
+    <mat-spinner [diameter]="32"></mat-spinner>
+    <span>Loading questions…</span>
   </div>
-  <mat-card
-    class="info-text mat-body-1"
-    *ngIf="questions.length <= 0 && !isLoading"
-  >
-    You have reached the end!
-  </mat-card>
+
+  <div class="load-status" *ngIf="state.error" role="alert">
+    <p>{{ state.error }}</p>
+    <button mat-stroked-button (click)="loadMore()">Try again</button>
+  </div>
+
+  <div class="load-status" *ngIf="!supportsObserver && state.hasMore && !state.isLoading && !state.error">
+    <button mat-stroked-button (click)="loadMore()">Load more questions</button>
+  </div>
+
+  <p class="end-message" *ngIf="!state.hasMore && !state.error" role="status">
+    {{ state.questions.length ? 'You have reached the end!' : 'No questions found for this journey.' }}
+  </p>
 </section>

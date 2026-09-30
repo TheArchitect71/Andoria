@@ -1,3 +1,4 @@
+import { ChangeDetectionStrategy } from '@angular/core';
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 
@@ -10,6 +11,8 @@ import { Question } from "../question.model";
 import { AuthService } from "src/app/authentication/auth.service";
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: "app-answer",
   animations: [
     trigger("myInsertRemoveTrigger", [
@@ -56,6 +59,7 @@ export class AnswerComponent implements OnInit, OnDestroy {
       if (paramMap.has("id")) {
         this.id = paramMap.get("id");
         this.questionsService.getQuestion(this.id).subscribe((postData) => {
+          this.isLoading = false;
           this.question = {
             id: postData.question._id,
             title: postData.question.title,
@@ -76,7 +80,9 @@ export class AnswerComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     if (this.mode === "create") {
       const trimmedAnswer = this.writtenAnswer.value.trim()
-      this.questionsService.addAnswer(this.id, trimmedAnswer);
+      this.questionsService.addAnswer(
+        this.id, trimmedAnswer, this.route.snapshot.queryParamMap.get("journey") || undefined
+      );
     } else {
       this.questionsService.updateQuestion(this.id, this.writtenAnswer.value);
     }
