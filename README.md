@@ -1,21 +1,45 @@
 # Andoria — Existential Thinker
 
-Angular frontend for `../Endoria`, with journey questions and personal reflections stored in offline MongoDB.
+A guided reflection app for exploring life questions and writing personal answers. The Angular interface groups questions into journeys and stores account and reflection data through [Endoria](https://github.com/TheArchitect71/Endoria).
+
+## What you can do
+
+- Explore journey questions with incremental loading and restored scroll position.
+- Create an account, log in, and manage your profile.
+- Save and delete your own reflections.
+
+## Preview
+
+![A guided reflection app for exploring life questions and writing personal answers](docs/screenshots/desktop.png)
+
+Captured from the running application on September 30, 2026. Any sample records shown are demonstration or isolated test data, not data included with a fresh installation.
+
+<details>
+<summary>Mobile view</summary>
+
+![Mobile a guided reflection app for exploring life questions and writing personal answers](docs/screenshots/mobile.png)
+
+</details>
 
 ## Run locally
 
-Use Node 26.10.0 (`.nvmrc`). Follow the offline database setup in [Endoria](https://github.com/TheArchitect71/Endoria), then run its `npm start`. Its API uses localhost:8000 and local MongoDB on port 27018.
+Use the Node version in `.nvmrc` (currently 26.10.0) and npm. Run these commands from the repository root.
 
-In this directory:
+Start **Endoria** first, following its README. The API runs on port 8000 with local MongoDB on port 27018. Clone the backend beside this frontend.
 
 ```sh
+nvm use  # if you manage Node with nvm
 npm ci
 npm start
 ```
 
-Open http://127.0.0.1:4200. Stop each foreground process with Ctrl+C. Both environment files use the local API. Images are bundled, fonts fall back to system fonts, and menu/account/answer controls no longer require cloud icon fonts.
+Open [http://127.0.0.1:4200](http://127.0.0.1:4200). Keep the server in the foreground; stop it with **Ctrl+C**.
 
-## Checks
+## Current scope
+
+A fresh Endoria database contains no questions; use an appropriate question dataset to populate the journeys. Password reset and the Edit-answer menu are unfinished placeholders. Saving and deleting reflections are implemented.
+
+## Development
 
 ```sh
 npm run build
@@ -23,14 +47,4 @@ npm run typecheck
 npm test -- --browsers=ChromeHeadless
 ```
 
-Set `CHROME_BIN` to a local Chromium executable if necessary. All 32 browser tests pass, including the existing user-written journey-cache, request-isolation, pagination, intersection-observer, and scroll-restoration tests. Test setup now imports real application/Material modules; unrelated generated title assertions were replaced by a navigation-shell check.
-
-Production browser validation covered signup/login, all 31 destination questions without repeated IDs, saving/deleting a reflection, reload/auth restoration, profile/logout, protected routes and desktop/mobile layouts, with external requests blocked. User data was not modified: tests used a separate local database containing copies of the questions.
-
-## Compatibility and preserved behavior
-
-Angular/core/CLI/build 22.2.0, Material/CDK 22.2.1, RxJS 7.8.2, Zone.js 0.16.3. TypeScript 6.0.3 is held by Angular's >=6.0 <6.1 constraint. Jasmine 6.3.0/types 6.0.0 are held because Jasmine 7's read-only globals break Zone.js's Jasmine adapter. Original module/eager change detection and untyped/non-strict code behavior are retained. Current M2 Sass APIs preserve the custom orange/gray theme.
-
-The original password reset method had no backend operation, and the Edit-answer menu item had no handler. These remain unimplemented placeholders; this migration does not claim to make those original placeholders functional. Save/delete reflections and the original authentication flow are validated.
-
-Source backups include the user's untracked documentation before migration. No private database or environment configuration is bundled.
+Browser tests require Chrome or Chromium; set `CHROME_BIN` if it is outside the standard installation path. Angular 22 currently requires TypeScript 6.0.x. The Jasmine 6 test dependencies are retained for compatibility with Zone.js.
