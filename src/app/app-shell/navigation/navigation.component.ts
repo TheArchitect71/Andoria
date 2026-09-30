@@ -1,12 +1,96 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit } from "@angular/core";
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from "@angular/router";
+import { Subscription } from "rxjs";
+import { QuestionsService } from "../../questions/questions.service";
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: "app-navigation",
   templateUrl: "./navigation.component.html",
   styleUrls: ["./navigation.component.css"],
 })
-export class NavigationComponent implements OnInit {
-  ngOnInit() {}
+export class NavigationComponent implements OnInit, AfterViewInit, OnDestroy {
+  private scrollContainer: HTMLElement;
+  private navigationSub: Subscription;
+  private frameId: number;
+  private navigationInProgress = false;
+  private restoring = true;
+  private destroyed = false;
+
+  constructor(
+    private questionsService: QuestionsService,
+    private router: Router,
+    private host: ElementRef<HTMLElement>,
+    private zone: NgZone
+  ) {}
+
+  ngOnInit(): void {
+    this.navigationSub = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.rememberScroll();
+        this.navigationInProgress = true;
+      } else if (event instanceof NavigationEnd || event instanceof NavigationCancel ||
+                 event instanceof NavigationError) {
+        this.navigationInProgress = false;
+        if (this.restoring) {
+          this.restoreScroll();
+        }
+      }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.scrollContainer = this.host.nativeElement.closest("mat-sidenav-content") ||
+      document.scrollingElement as HTMLElement;
+    this.zone.runOutsideAngular(() => {
+      this.scrollContainer.addEventListener("scroll", this.onScroll, { passive: true });
+    });
+    this.restoreScroll();
+  }
+
+  private onScroll = (): void => {
+    if (!this.restoring && !this.navigationInProgress) {
+      this.rememberScroll();
+    }
+  };
+
+  private rememberScroll(): void {
+    if (this.scrollContainer && !this.restoring) {
+      this.questionsService.rememberJourneyOverviewScrollTop(this.scrollContainer.scrollTop);
+    }
+  }
+
+  private restoreScroll(): void {
+    if (!this.scrollContainer) {
+      return;
+    }
+    cancelAnimationFrame(this.frameId);
+    this.zone.runOutsideAngular(() => {
+      this.frameId = requestAnimationFrame(() => {
+        this.frameId = requestAnimationFrame(() => {
+          if (!this.destroyed && !this.navigationInProgress) {
+            // This screen's offset is independent of the question list sharing this container.
+            this.scrollContainer.scrollTop = this.questionsService.getJourneyOverviewScrollTop();
+            this.restoring = false;
+          }
+        });
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (!this.navigationInProgress) {
+      this.rememberScroll();
+    }
+    this.destroyed = true;
+    cancelAnimationFrame(this.frameId);
+    this.navigationSub.unsubscribe();
+    if (this.scrollContainer) {
+      this.scrollContainer.removeEventListener("scroll", this.onScroll);
+    }
+  }
 
   navigationList = [
     {

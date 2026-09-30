@@ -14,3 +14,6 @@
     width: 45%;
   }
 }
+/* Preserve readable card spacing after the Material MDC migration. */
+.example-card mat-card-title { margin: 16px 16px 0; }
+.example-card mat-card-content { font-size: 14px; line-height: 1.4; }

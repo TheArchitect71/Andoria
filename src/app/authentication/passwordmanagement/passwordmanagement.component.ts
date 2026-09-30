@@ -1,9 +1,12 @@
+import { ChangeDetectionStrategy } from '@angular/core';
 import { Component, OnInit } from "@angular/core";
 import { NgForm } from "@angular/forms";
 import { Subscription } from "rxjs";
 import { AuthService } from "../auth.service";
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: "app-passwordmanagement",
   templateUrl: "./passwordmanagement.component.html",
   styleUrls: ["./passwordmanagement.component.css"],

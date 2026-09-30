@@ -1,9 +1,12 @@
+import { ChangeDetectionStrategy } from '@angular/core';
 import { Component, ChangeDetectorRef, OnDestroy } from "@angular/core";
 import { Subscription } from "rxjs";
 import {MediaMatcher} from '@angular/cdk/layout';
 import { AuthService } from "src/app/authentication/auth.service";
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],

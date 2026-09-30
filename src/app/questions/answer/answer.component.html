@@ -12,7 +12,7 @@
       aria-label="save button"
       (click)="onSaveAnswer()"
     >
-      <span class="material-icons"> save </span>
+      <span>Save</span>
     </button>
     <mat-form-field appearance="outline">
       <mat-label>{{ currentDate | date: "mediumDate" }}</mat-label>
@@ -42,21 +42,21 @@
         [matMenuTriggerFor]="menu"
         aria-label="Example icon-button with a menu"
       >
-        <mat-icon>more_vert</mat-icon>
+        <span aria-hidden="true">⋮</span>
       </button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item>
-          <mat-icon>edit</mat-icon>
+          <span aria-hidden="true">✎</span>
           <span>Edit</span>
         </button>
         <button mat-menu-item (click)="onDelete(answer._id, answer.question_id)">
-          <mat-icon>delete</mat-icon>
+          <span aria-hidden="true">×</span>
           <span>Delete</span>
         </button>
       </mat-menu>
       <mat-card-subtitle>
         <p id="dateSubmit">
-          {{ answer.date | date: mediumDate }}
+          {{ answer.date | date: 'mediumDate' }}
         </p>
       </mat-card-subtitle>
       <mat-card-content>

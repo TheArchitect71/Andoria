@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.spec.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/questions-spec"
+  },
+  "include": [
+    "app/questions/questions.service.spec.ts",
+    "app/questions/list/list.component.spec.ts",
+    "app/app-shell/navigation/navigation.component.spec.ts"
+  ]
+}

@@ -1,27 +1,36 @@
-# Andoria
+# Andoria — Existential Thinker
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.1.4.
+Angular frontend for `../Endoria`, with journey questions and personal reflections stored in offline MongoDB.
 
-## Development server
+## Run locally
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Use Node 26.10.0 (`.nvmrc`). Follow the offline database setup in [Endoria](https://github.com/TheArchitect71/Endoria), then run its `npm start`. Its API uses localhost:8000 and local MongoDB on port 27018.
 
-## Code scaffolding
+In this directory:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```sh
+npm ci
+npm start
+```
 
-## Build
+Open http://127.0.0.1:4200. Stop each foreground process with Ctrl+C. Both environment files use the local API. Images are bundled, fonts fall back to system fonts, and menu/account/answer controls no longer require cloud icon fonts.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+## Checks
 
-## Running unit tests
+```sh
+npm run build
+npm run typecheck
+npm test -- --browsers=ChromeHeadless
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Set `CHROME_BIN` to a local Chromium executable if necessary. All 32 browser tests pass, including the existing user-written journey-cache, request-isolation, pagination, intersection-observer, and scroll-restoration tests. Test setup now imports real application/Material modules; unrelated generated title assertions were replaced by a navigation-shell check.
 
-## Running end-to-end tests
+Production browser validation covered signup/login, all 31 destination questions without repeated IDs, saving/deleting a reflection, reload/auth restoration, profile/logout, protected routes and desktop/mobile layouts, with external requests blocked. User data was not modified: tests used a separate local database containing copies of the questions.
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+## Compatibility and preserved behavior
 
-## Further help
+Angular/core/CLI/build 22.2.0, Material/CDK 22.2.1, RxJS 7.8.2, Zone.js 0.16.3. TypeScript 6.0.3 is held by Angular's >=6.0 <6.1 constraint. Jasmine 6.3.0/types 6.0.0 are held because Jasmine 7's read-only globals break Zone.js's Jasmine adapter. Original module/eager change detection and untyped/non-strict code behavior are retained. Current M2 Sass APIs preserve the custom orange/gray theme.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+The original password reset method had no backend operation, and the Edit-answer menu item had no handler. These remain unimplemented placeholders; this migration does not claim to make those original placeholders functional. Save/delete reflections and the original authentication flow are validated.
+
+Source backups include the user's untracked documentation before migration. No private database or environment configuration is bundled.
